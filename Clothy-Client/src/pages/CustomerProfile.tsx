@@ -93,7 +93,7 @@ export default function CustomerProfile() {
             {customer.dept && <p className="text-sm text-gray-400 mt-1">แผนก: {customer.dept}</p>}
           </div>
           <div className="w-16 h-16 rounded-full bg-[#f4f5f2] text-[#8F9779] flex items-center justify-center text-2xl font-bold">
-            {customer.name.charAt(0)}
+          {customer.name?.charAt(0) ?? '?'}
           </div>
         </div>
 

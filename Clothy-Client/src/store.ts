@@ -32,16 +32,17 @@ interface TailorStore {
   fetchCustomers: () => Promise<void>;
   fetchOutfits: () => Promise<void>;
   
-  addCustomer: (name: string, phone: string, dept: string, address: string) => Promise<void>;
+  addCustomer: (name: string, phone: string, dept: string, address: string) => Promise<boolean>;
   addOutfit: (customerId: string, name: string) => Promise<string>;
   deleteOutfit: (outfitId: string) => Promise<void>;
   renameOutfit: (outfitId: string, newName: string) => Promise<void>;
   updateMeasurements: (outfitId: string, data: any) => Promise<void>;
   updateOutfitStatus: (outfitId: string, status: OutfitStatus) => Promise<void>;
-  
   addPhoto: (outfitId: string, url: string, caption: string) => Promise<void>;
   updatePhotoCaption: (outfitId: string, photoId: string, caption: string) => Promise<void>;
   deletePhoto: (photoId: string) => Promise<void>;
+  renameCustomer: (customerId: string, newName: string) => Promise<void>;
+  deleteCustomer: (customerId: string) => Promise<void>;
 }
 
 export const useTailorStore = create<TailorStore>((set, get) => ({
@@ -53,6 +54,7 @@ export const useTailorStore = create<TailorStore>((set, get) => ({
       const res = await fetch('http://localhost:5000/api/customers');
       if (!res.ok) throw new Error('Network response was not ok');
       const data = await res.json();
+      console.log("🔍 Raw data from server:", data[0]);
       const formatted = data.map((c: any) => ({
         id: c.CustomerID, name: c.Name, phone: c.Phone, dept: c.Department, address: c.Address
       }));
@@ -100,19 +102,40 @@ export const useTailorStore = create<TailorStore>((set, get) => ({
     } catch (error) { console.error("❌ โหลดชุดสั่งตัดล้มเหลว:", error); }
   },
 
-  addCustomer: async (name, phone, dept, address) => {
-    try {
-      const res = await fetch('http://localhost:5000/api/customers', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, phone, dept, address })
-      });
-      if (res.ok) {
-        alert("บันทึกลูกค้าลงฐานข้อมูลสำเร็จ! 🎉");
-        await get().fetchCustomers(); 
-      }
-    } catch (error) { console.error("❌ เพิ่มลูกค้าล้มเหลว:", error); }
-  },
+  // แก้เป็น — คืนค่า true/false แทน alert
+addCustomer: async (name, phone, dept, address) => {
+  try {
+    const res = await fetch('http://localhost:5000/api/customers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, phone, dept, address })
+    });
+    if (res.ok) {
+      await get().fetchCustomers(); // โหลดข้อมูลใหม่ก่อน
+      return true;                  // แล้วค่อยบอกว่าสำเร็จ
+    }
+  } catch (error) { console.error("❌ เพิ่มลูกค้าล้มเหลว:", error); }
+  return false;
+},
+renameCustomer: async (customerId, newName) => {
+  try {
+    const res = await fetch(`http://localhost:5000/api/customers/${customerId}/rename`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ newName })
+    });
+    if (res.ok) await get().fetchCustomers();
+  } catch (error) { console.error("❌ แก้ไขชื่อลูกค้าล้มเหลว:", error); }
+},
+
+deleteCustomer: async (customerId) => {
+  try {
+    const res = await fetch(`http://localhost:5000/api/customers/${customerId}`, { 
+      method: 'DELETE' 
+    });
+    if (res.ok) await get().fetchCustomers();
+  } catch (error) { console.error("❌ ลบลูกค้าล้มเหลว:", error); }
+},
 
   addOutfit: async (customerId, name) => {
     try {

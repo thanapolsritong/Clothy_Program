@@ -6,6 +6,11 @@ const sql = require('mssql/msnodesqlv8');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+app.use(cors({
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type']
+  }));
 //เพิ่ม limit เป็น 50mb เพื่อให้รับไฟล์รูปภาพได้
 app.use(express.json({ limit: '50mb' })); 
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
@@ -244,6 +249,36 @@ app.delete('/api/photos/:id', async (req, res) => {
             .query(`DELETE FROM Photos WHERE PhotoID = @PhotoID`);
         res.json({ message: 'ลบรูปสำเร็จ!' });
     } catch (err) { res.status(500).send(err.message); }
+});
+
+// API แก้ไขชื่อลูกค้า
+app.put('/api/customers/:id/rename', async (req, res) => {
+    try {
+        const { newName } = req.body;
+        const pool = await sql.connect(dbConfig);
+        await pool.request()
+            .input('CustomerID', sql.VarChar(20), req.params.id)
+            .input('Name', sql.NVarChar(100), newName)
+            .query('UPDATE Customers SET Name = @Name WHERE CustomerID = @CustomerID');
+        res.json({ message: 'แก้ไขชื่อลูกค้าสำเร็จ!' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('เกิดข้อผิดพลาดในการแก้ไขชื่อ');
+    }
+});
+
+// API ลบลูกค้า
+app.delete('/api/customers/:id', async (req, res) => {
+    try {
+        const pool = await sql.connect(dbConfig);
+        await pool.request()
+            .input('CustomerID', sql.VarChar(20), req.params.id)
+            .query('DELETE FROM Customers WHERE CustomerID = @CustomerID');
+        res.json({ message: 'ลบลูกค้าสำเร็จ!' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('เกิดข้อผิดพลาดในการลบลูกค้า');
+    }
 });
 
 app.listen(PORT, () => {
