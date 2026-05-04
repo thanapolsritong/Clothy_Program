@@ -1,9 +1,9 @@
--- 1. สร้างฐานข้อมูลใหม่ชื่อ ClothyDB
-CREATE DATABASE ClothyDB;
+-- 1. สร้างฐานข้อมูลใหม่ชื่อ Clothy_DataBase
+CREATE DATABASE Clothy_DataBase;
 GO
 
 -- 2. เลือกใช้งานฐานข้อมูลที่เพิ่งสร้าง
-USE ClothyDB;
+USE Clothy_DataBase;
 GO
 
 -- 3. สร้างตาราง Customers (ลูกค้า)
@@ -31,7 +31,7 @@ CREATE TABLE Outfits (
     Waist DECIMAL(5,2) NULL,
     Hips DECIMAL(5,2) NULL,
     ShirtLength DECIMAL(5,2) NULL,
-    
+
     -- สร้าง Foreign Key เชื่อมกับตาราง Customers
     CONSTRAINT FK_Outfits_Customers FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID) ON DELETE CASCADE
 );
@@ -43,10 +43,10 @@ CREATE TABLE Photos (
     OutfitID VARCHAR(20) NOT NULL,
     PhotoURL NVARCHAR(MAX) NOT NULL,
     Caption NVARCHAR(255) NULL,
-    
+
     -- สร้าง Foreign Key เชื่อมกับตาราง Outfits
     CONSTRAINT FK_Photos_Outfits FOREIGN KEY (OutfitID) REFERENCES Outfits(OutfitID) ON DELETE CASCADE
 );
 GO
 
-PRINT 'สร้างฐานข้อมูลและตาราง ClothyDB สำเร็จเรียบร้อย!';
+PRINT 'สร้างฐานข้อมูลและตาราง Clothy_DataBase สำเร็จเรียบร้อย!';
