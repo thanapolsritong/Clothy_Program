@@ -50,3 +50,34 @@ CREATE TABLE Photos (
 GO
 
 PRINT 'สร้างฐานข้อมูลและตาราง Clothy_DataBase สำเร็จเรียบร้อย!';
+
+-- เพิ่ม collumn จำนวนชุด
+ALTER TABLE Outfits ADD Quantity INT NULL DEFAULT 1;
+ALTER TABLE Outfits ADD UnitPrice DECIMAL(10,2) NULL;
+
+-- เพิ่ม collumn สัดส่วน
+ALTER TABLE Outfits ADD
+  FrontLength   DECIMAL(5,2) NULL,
+  BackLength    DECIMAL(5,2) NULL,
+  FrontShoulder DECIMAL(5,2) NULL,
+  BackShoulder  DECIMAL(5,2) NULL,
+  Shoulder      DECIMAL(5,2) NULL,
+  Neck          DECIMAL(5,2) NULL,
+  ChestHeight   DECIMAL(5,2) NULL,
+  ChestDistance DECIMAL(5,2) NULL,
+  TopWaist      DECIMAL(5,2) NULL,
+  TopBelly      DECIMAL(5,2) NULL,
+  TopHips       DECIMAL(5,2) NULL,
+  Armpit        DECIMAL(5,2) NULL,
+  ArmWidth      DECIMAL(5,2) NULL,
+  ArmLength     DECIMAL(5,2) NULL,
+  Wrist         DECIMAL(5,2) NULL,
+  BottomWaist   DECIMAL(5,2) NULL,
+  BottomBelly   DECIMAL(5,2) NULL,
+  BottomHips    DECIMAL(5,2) NULL,
+  SkirtLength   DECIMAL(5,2) NULL,
+  CrotchDepth   DECIMAL(5,2) NULL,
+  Crotch        DECIMAL(5,2) NULL,
+  Thigh         DECIMAL(5,2) NULL,
+  PantsLength   DECIMAL(5,2) NULL,
+  LegOpening    DECIMAL(5,2) NULL;

@@ -262,15 +262,42 @@ class OutfitRepository {
       const result = await pool.request().query('SELECT * FROM Outfits');
       return result.recordset.map(r =>
         new Outfit(r.OutfitID, r.CustomerID, r.Name, r.Status || 'รอดำเนินการ', {
-          price:        r.Price?.toString() || '',
-          deposit:      r.Deposit?.toString() || '',
-          remaining:    r.Remaining?.toString() || '',
-          orderDate:    r.OrderDate    ? r.OrderDate.toISOString().split('T')[0]    : '',
-          deliveryDate: r.DeliveryDate ? r.DeliveryDate.toISOString().split('T')[0] : '',
-          chest:        r.Chest?.toString() || '',
-          waist:        r.Waist?.toString() || '',
-          hips:         r.Hips?.toString() || '',
-          shirtLength:  r.ShirtLength?.toString() || '',
+          unitPrice:     r.UnitPrice?.toString()    || '',
+          quantity:      r.Quantity?.toString()     || '1',
+          price:         r.Price?.toString()        || '',
+          deposit:       r.Deposit?.toString()      || '',
+          remaining:     r.Remaining?.toString()    || '',
+          orderDate:     r.OrderDate    ? r.OrderDate.toISOString().split('T')[0]    : '',
+          deliveryDate:  r.DeliveryDate ? r.DeliveryDate.toISOString().split('T')[0] : '',
+          // ท่อนบน
+          frontLength:   r.FrontLength?.toString()   || '',
+          backLength:    r.BackLength?.toString()    || '',
+          frontShoulder: r.FrontShoulder?.toString() || '',
+          backShoulder:  r.BackShoulder?.toString()  || '',
+          shoulder:      r.Shoulder?.toString()      || '',
+          neck:          r.Neck?.toString()          || '',
+          chest:         r.Chest?.toString()         || '',
+          chestHeight:   r.ChestHeight?.toString()   || '',
+          chestDistance: r.ChestDistance?.toString() || '',
+          topWaist:      r.TopWaist?.toString()      || '',
+          topBelly:      r.TopBelly?.toString()      || '',
+          topHips:       r.TopHips?.toString()       || '',
+          shirtLength:   r.ShirtLength?.toString()   || '',
+          // ท่อนแขน
+          armpit:        r.Armpit?.toString()        || '',
+          armWidth:      r.ArmWidth?.toString()      || '',
+          armLength:     r.ArmLength?.toString()     || '',
+          wrist:         r.Wrist?.toString()         || '',
+          // ท่อนล่าง
+          bottomWaist:   r.BottomWaist?.toString()   || '',
+          bottomBelly:   r.BottomBelly?.toString()   || '',
+          bottomHips:    r.BottomHips?.toString()    || '',
+          skirtLength:   r.SkirtLength?.toString()   || '',
+          crotchDepth:   r.CrotchDepth?.toString()   || '',
+          crotch:        r.Crotch?.toString()        || '',
+          thigh:         r.Thigh?.toString()         || '',
+          pantsLength:   r.PantsLength?.toString()   || '',
+          legOpening:    r.LegOpening?.toString()    || '',
         })
       );
     } catch (err) {
@@ -298,20 +325,59 @@ class OutfitRepository {
     try {
       const pool = await getPool();
       const result = await pool.request()
-        .input('OutfitID',     sql.VarChar(20), id)
-        .input('Status',       sql.NVarChar(20), status)
-        .input('Price',        sql.Decimal(10, 2), measurements.price || 0)
-        .input('Deposit',      sql.Decimal(10, 2), measurements.deposit || 0)
-        .input('Remaining',    sql.Decimal(10, 2), measurements.remaining || 0)
-        .input('OrderDate',    sql.Date, measurements.orderDate || null)
-        .input('DeliveryDate', sql.Date, measurements.deliveryDate || null)
-        .input('Chest',        sql.Decimal(5, 2), measurements.chest || null)
-        .input('Waist',        sql.Decimal(5, 2), measurements.waist || null)
-        .input('Hips',         sql.Decimal(5, 2), measurements.hips || null)
-        .input('ShirtLength',  sql.Decimal(5, 2), measurements.shirtLength || null)
-        .query(`UPDATE Outfits SET Status=@Status, Price=@Price, Deposit=@Deposit, Remaining=@Remaining,
-                OrderDate=@OrderDate, DeliveryDate=@DeliveryDate, Chest=@Chest, Waist=@Waist,
-                Hips=@Hips, ShirtLength=@ShirtLength WHERE OutfitID=@OutfitID`);
+        .input('OutfitID',      sql.VarChar(20),    id)
+        .input('Status',        sql.NVarChar(20),   status)
+        .input('UnitPrice',     sql.Decimal(10, 2), parseFloat(measurements.unitPrice)    || null)
+        .input('Quantity',      sql.Int,             parseInt(measurements.quantity)       || 1)
+        .input('Price',         sql.Decimal(10, 2), parseFloat(measurements.price)        || 0)
+        .input('Deposit',       sql.Decimal(10, 2), parseFloat(measurements.deposit)      || 0)
+        .input('Remaining',     sql.Decimal(10, 2), parseFloat(measurements.remaining)    || 0)
+        .input('OrderDate',     sql.Date,            measurements.orderDate               || null)
+        .input('DeliveryDate',  sql.Date,            measurements.deliveryDate            || null)
+        // สัดส่วนท่อนบน
+        .input('FrontLength',   sql.Decimal(5, 2),  parseFloat(measurements.frontLength)  || null)
+        .input('BackLength',    sql.Decimal(5, 2),  parseFloat(measurements.backLength)   || null)
+        .input('FrontShoulder', sql.Decimal(5, 2),  parseFloat(measurements.frontShoulder)|| null)
+        .input('BackShoulder',  sql.Decimal(5, 2),  parseFloat(measurements.backShoulder) || null)
+        .input('Shoulder',      sql.Decimal(5, 2),  parseFloat(measurements.shoulder)     || null)
+        .input('Neck',          sql.Decimal(5, 2),  parseFloat(measurements.neck)         || null)
+        .input('Chest',         sql.Decimal(5, 2),  parseFloat(measurements.chest)        || null)
+        .input('ChestHeight',   sql.Decimal(5, 2),  parseFloat(measurements.chestHeight)  || null)
+        .input('ChestDistance', sql.Decimal(5, 2),  parseFloat(measurements.chestDistance)|| null)
+        .input('TopWaist',      sql.Decimal(5, 2),  parseFloat(measurements.topWaist)     || null)
+        .input('TopBelly',      sql.Decimal(5, 2),  parseFloat(measurements.topBelly)     || null)
+        .input('TopHips',       sql.Decimal(5, 2),  parseFloat(measurements.topHips)      || null)
+        .input('ShirtLength',   sql.Decimal(5, 2),  parseFloat(measurements.shirtLength)  || null)
+        // สัดส่วนท่อนแขน
+        .input('Armpit',        sql.Decimal(5, 2),  parseFloat(measurements.armpit)       || null)
+        .input('ArmWidth',      sql.Decimal(5, 2),  parseFloat(measurements.armWidth)     || null)
+        .input('ArmLength',     sql.Decimal(5, 2),  parseFloat(measurements.armLength)    || null)
+        .input('Wrist',         sql.Decimal(5, 2),  parseFloat(measurements.wrist)        || null)
+        // สัดส่วนท่อนล่าง
+        .input('BottomWaist',   sql.Decimal(5, 2),  parseFloat(measurements.bottomWaist)  || null)
+        .input('BottomBelly',   sql.Decimal(5, 2),  parseFloat(measurements.bottomBelly)  || null)
+        .input('BottomHips',    sql.Decimal(5, 2),  parseFloat(measurements.bottomHips)   || null)
+        .input('SkirtLength',   sql.Decimal(5, 2),  parseFloat(measurements.skirtLength)  || null)
+        .input('CrotchDepth',   sql.Decimal(5, 2),  parseFloat(measurements.crotchDepth)  || null)
+        .input('Crotch',        sql.Decimal(5, 2),  parseFloat(measurements.crotch)       || null)
+        .input('Thigh',         sql.Decimal(5, 2),  parseFloat(measurements.thigh)        || null)
+        .input('PantsLength',   sql.Decimal(5, 2),  parseFloat(measurements.pantsLength)  || null)
+        .input('LegOpening',    sql.Decimal(5, 2),  parseFloat(measurements.legOpening)   || null)
+        .query(`UPDATE Outfits SET
+                Status=@Status, UnitPrice=@UnitPrice, Quantity=@Quantity,
+                Price=@Price, Deposit=@Deposit, Remaining=@Remaining,
+                OrderDate=@OrderDate, DeliveryDate=@DeliveryDate,
+                FrontLength=@FrontLength, BackLength=@BackLength,
+                FrontShoulder=@FrontShoulder, BackShoulder=@BackShoulder,
+                Shoulder=@Shoulder, Neck=@Neck, Chest=@Chest,
+                ChestHeight=@ChestHeight, ChestDistance=@ChestDistance,
+                TopWaist=@TopWaist, TopBelly=@TopBelly, TopHips=@TopHips,
+                ShirtLength=@ShirtLength,
+                Armpit=@Armpit, ArmWidth=@ArmWidth, ArmLength=@ArmLength, Wrist=@Wrist,
+                BottomWaist=@BottomWaist, BottomBelly=@BottomBelly, BottomHips=@BottomHips,
+                SkirtLength=@SkirtLength, CrotchDepth=@CrotchDepth, Crotch=@Crotch,
+                Thigh=@Thigh, PantsLength=@PantsLength, LegOpening=@LegOpening
+                WHERE OutfitID=@OutfitID`);
       if (result.rowsAffected[0] === 0) throw new ResourceNotFoundException(`ชุด id=${id}`);
     } catch (err) {
       throw err instanceof AppError ? err : new DatabaseException(err.message);

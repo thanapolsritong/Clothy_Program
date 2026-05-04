@@ -21,7 +21,8 @@ export default function OutfitDetail() {
       armpit: '', armWidth: '', armLength: '', wrist: '',
       bottomWaist: '', bottomBelly: '', bottomHips: '', skirtLength: '',
       crotchDepth: '', crotch: '', thigh: '', pantsLength: '', legOpening: '',
-      orderDate: '', deliveryDate: '', price: '', deposit: '', remaining: ''
+      orderDate: '', deliveryDate: '',
+      unitPrice: '', quantity: '1', price: '', deposit: '', remaining: ''
     }
   );
 
@@ -69,11 +70,14 @@ export default function OutfitDetail() {
     }
   };
 
-  const handleFinancialChange = (field: 'price' | 'deposit', value: string) => {
+  const handleFinancialChange = (field: 'unitPrice' | 'quantity' | 'deposit', value: string) => {
     const newData = { ...measurements, [field]: value };
-    const price = parseFloat(newData.price) || 0;
-    const deposit = parseFloat(newData.deposit) || 0;
-    newData.remaining = price > 0 ? (price - deposit).toString() : '';
+    const unitPrice = parseFloat(newData.unitPrice) || 0;
+    const quantity  = parseInt(newData.quantity)    || 1;
+    const deposit   = parseFloat(newData.deposit)   || 0;
+    const total     = unitPrice * quantity;
+    newData.price     = total > 0 ? total.toString() : '';
+    newData.remaining = total > 0 ? (total - deposit).toString() : '';
     setMeasurements(newData);
   };
 
@@ -185,12 +189,23 @@ export default function OutfitDetail() {
         <div className="w-full bg-white rounded-b-2xl shadow-sm border border-[#e5e5e0] border-t-0 overflow-hidden mb-12">
           <form onSubmit={handleSaveMeasurements}>
             {/* ข้อมูลวันเวลาและราคา */}
-            <div className="p-6 bg-[#EBF5FB] border-b border-[#e5e5e0] grid grid-cols-1 md:grid-cols-5 gap-4">
-              <div><label className="text-xs font-semibold text-gray-700 mb-1 flex items-center gap-1"><Calendar size={12}/> วันที่รับงาน</label><input type="date" value={measurements.orderDate || ''} onChange={(e) => setMeasurements({ ...measurements, orderDate: e.target.value })} className="w-full px-3 py-2 rounded-md border border-[#d1d1cc] text-sm outline-none focus:border-[#6BB5D6]" title="วันที่รับงาน" /></div>
-              <div><label className="text-xs font-semibold text-[#c85a5a] mb-1 flex items-center gap-1"><Calendar size={12}/> เวลาที่ต้องส่ง</label><input type="date" value={measurements.deliveryDate || ''} onChange={(e) => setMeasurements({ ...measurements, deliveryDate: e.target.value })} className="w-full px-3 py-2 rounded-md border border-[#c85a5a] text-sm outline-none focus:border-[#c85a5a]" title="เวลาที่ต้องส่ง" /></div>
-              <div><label className="text-xs font-semibold text-gray-700 mb-1 flex items-center gap-1"><CreditCard size={12}/> ราคา</label><input type="number" value={measurements.price || ''} onChange={(e) => handleFinancialChange('price', e.target.value)} placeholder="0" className="w-full px-3 py-2 rounded-md border border-[#d1d1cc] text-sm outline-none focus:border-[#6BB5D6]" /></div>
-              <div><label className="text-xs font-semibold text-gray-700 mb-1 flex items-center gap-1">มัดจำ</label><input type="number" value={measurements.deposit || ''} onChange={(e) => handleFinancialChange('deposit', e.target.value)} placeholder="0" className="w-full px-3 py-2 rounded-md border border-[#d1d1cc] text-sm outline-none focus:border-[#6BB5D6]" /></div>
-              <div><label className="text-xs font-semibold text-gray-700 mb-1 flex items-center gap-1">คงเหลือ</label><input type="number" value={measurements.remaining || ''} readOnly placeholder="0" className="w-full px-3 py-2 rounded-md bg-gray-100 border border-[#d1d1cc] text-sm text-gray-500 font-medium" /></div>
+            <div className="p-6 bg-[#EBF5FB] border-b border-[#e5e5e0] space-y-3">
+              {/* Row 1: วันที่ */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div><label className="text-xs font-semibold text-gray-700 mb-1 flex items-center gap-1"><Calendar size={12}/> วันที่รับงาน</label><input type="date" value={measurements.orderDate || ''} onChange={(e) => setMeasurements({ ...measurements, orderDate: e.target.value })} className="w-full px-3 py-2 rounded-md border border-[#d1d1cc] text-sm outline-none focus:border-[#6BB5D6]" title="วันที่รับงาน" /></div>
+                <div><label className="text-xs font-semibold text-[#c85a5a] mb-1 flex items-center gap-1"><Calendar size={12}/> เวลาที่ต้องส่ง</label><input type="date" value={measurements.deliveryDate || ''} onChange={(e) => setMeasurements({ ...measurements, deliveryDate: e.target.value })} className="w-full px-3 py-2 rounded-md border border-[#c85a5a] text-sm outline-none focus:border-[#c85a5a]" title="เวลาที่ต้องส่ง" /></div>
+              </div>
+              {/* Row 2: ราคา */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div><label className="text-xs font-semibold text-gray-700 mb-1 flex items-center gap-1"><CreditCard size={12}/> ราคา/ชุด</label><input type="number" value={measurements.unitPrice || ''} onChange={(e) => handleFinancialChange('unitPrice', e.target.value)} placeholder="0" className="w-full px-3 py-2 rounded-md border border-[#d1d1cc] text-sm outline-none focus:border-[#6BB5D6]" /></div>
+                <div><label className="text-xs font-semibold text-gray-700 mb-1 flex items-center gap-1">จำนวนชุด</label><input type="number" min="1" value={measurements.quantity || '1'} onChange={(e) => handleFinancialChange('quantity', e.target.value)} placeholder="1" className="w-full px-3 py-2 rounded-md border border-[#d1d1cc] text-sm outline-none focus:border-[#6BB5D6]" /></div>
+                <div><label className="text-xs font-semibold text-[#6BB5D6] mb-1 flex items-center gap-1">ราคารวม</label><input type="number" value={measurements.price || ''} readOnly placeholder="0" className="w-full px-3 py-2 rounded-md bg-blue-50 border border-[#6BB5D6] text-sm text-[#6BB5D6] font-semibold" /></div>
+                <div><label className="text-xs font-semibold text-gray-700 mb-1 flex items-center gap-1">มัดจำ</label><input type="number" value={measurements.deposit || ''} onChange={(e) => handleFinancialChange('deposit', e.target.value)} placeholder="0" className="w-full px-3 py-2 rounded-md border border-[#d1d1cc] text-sm outline-none focus:border-[#6BB5D6]" /></div>
+              </div>
+              {/* คงเหลือ */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="md:col-start-4"><label className="text-xs font-semibold text-gray-700 mb-1 flex items-center gap-1">คงเหลือ</label><input type="number" value={measurements.remaining || ''} readOnly placeholder="0" className="w-full px-3 py-2 rounded-md bg-gray-100 border border-[#d1d1cc] text-sm text-gray-500 font-medium" /></div>
+              </div>
             </div>
 
             {/* หมวดหมู่สัดส่วน */}
