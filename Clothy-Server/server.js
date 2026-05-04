@@ -1,7 +1,8 @@
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
-const sql = require('mssql/msnodesqlv8');
+const cors    = require('cors');
+const sql     = require('mssql/msnodesqlv8');
+const path    = require('path');
 
 // ==========================================
 // ERROR CLASSES — Exception Handling (OOP)
@@ -478,20 +479,24 @@ const customerRepo = new CustomerRepository();
 const outfitRepo   = new OutfitRepository();
 const photoRepo    = new PhotoRepository();
 
-app.use(cors({
-  origin: 'http://localhost:5173',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type'],
-}));
+// เปิด CORS ให้ทุก origin (LAN + localhost)
+app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+// Serve หน้าเว็บ React ที่ build แล้ว
+const CLIENT_BUILD = path.join(__dirname, '..', 'Clothy-Client', 'dist');
+app.use(express.static(CLIENT_BUILD));
 
 // ทดสอบเชื่อมต่อ DB
 getPool()
   .then(() => console.log(`✅ เชื่อมต่อ SQL Server (${dbConfig.database}) สำเร็จ!`))
   .catch(err => console.error('❌ เชื่อมต่อฐานข้อมูลไม่ได้:', err.message));
 
-app.get('/', (req, res) => res.send('ยินดีต้อนรับสู่ Clothy API!'));
+// React Router — ทุก path ที่ไม่ใช่ /api ให้ส่ง index.html
+app.get(/^(?!\/api).*$/, (req, res) => {
+  res.sendFile(path.join(CLIENT_BUILD, 'index.html'));
+});
 
 // --- Customer Routes ---
 app.get('/api/customers', async (req, res, next) => {
@@ -612,6 +617,7 @@ app.use((err, req, res, next) => {
   res.status(statusCode).json({ error: err.name, message: err.message });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Clothy Server รันที่ http://localhost:${PORT}`);
+  console.log(`🌐 เพื่อนใน WiFi เดียวกันเข้าได้ที่ http://[IP เครื่องเรา]:${PORT}`);
 });

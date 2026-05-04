@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Plus, Shirt, Trash2, Edit2, Check, X, Settings } from 'lucide-react';
 import { useTailorStore } from '../store';

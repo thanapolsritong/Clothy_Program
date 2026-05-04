@@ -156,7 +156,7 @@ export const useTailorStore = create<TailorStore>((set, get) => ({
 
   fetchCustomers: async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/customers');
+      const res = await fetch('/api/customers');
       if (!res.ok) throw new Error('โหลดลูกค้าล้มเหลว');
       const data = await res.json();
       const customers = data.map((c: any) =>
@@ -169,8 +169,8 @@ export const useTailorStore = create<TailorStore>((set, get) => ({
   fetchOutfits: async () => {
     try {
       const [outfitsRes, photosRes] = await Promise.all([
-        fetch('http://localhost:5000/api/outfits'),
-        fetch('http://localhost:5000/api/photos'),
+        fetch('/api/outfits'),
+        fetch('/api/photos'),
       ]);
       if (!outfitsRes.ok || !photosRes.ok) throw new Error('โหลดข้อมูลล้มเหลว');
 
@@ -234,7 +234,7 @@ export const useTailorStore = create<TailorStore>((set, get) => ({
 
   addCustomer: async (name, phone, dept, address) => {
     try {
-      const res = await fetch('http://localhost:5000/api/customers', {
+      const res = await fetch('/api/customers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, phone, dept, address }),
@@ -246,7 +246,7 @@ export const useTailorStore = create<TailorStore>((set, get) => ({
 
   renameCustomer: async (customerId, newName) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/customers/${customerId}/rename`, {
+      const res = await fetch(`/api/customers/${customerId}/rename`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ newName }),
@@ -257,14 +257,14 @@ export const useTailorStore = create<TailorStore>((set, get) => ({
 
   deleteCustomer: async (customerId) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/customers/${customerId}`, { method: 'DELETE' });
+      const res = await fetch(`/api/customers/${customerId}`, { method: 'DELETE' });
       if (res.ok) await get().fetchCustomers();
     } catch (error) { console.error('❌ ลบลูกค้าล้มเหลว:', error); }
   },
 
   addOutfit: async (customerId, name) => {
     try {
-      const res = await fetch('http://localhost:5000/api/outfits', {
+      const res = await fetch('/api/outfits', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ customerId, name }),
@@ -280,14 +280,14 @@ export const useTailorStore = create<TailorStore>((set, get) => ({
 
   deleteOutfit: async (outfitId) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/outfits/${outfitId}`, { method: 'DELETE' });
+      const res = await fetch(`/api/outfits/${outfitId}`, { method: 'DELETE' });
       if (res.ok) await get().fetchOutfits();
     } catch (error) { console.error('❌ ลบชุดล้มเหลว:', error); }
   },
 
   renameOutfit: async (outfitId, newName) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/outfits/${outfitId}/rename`, {
+      const res = await fetch(`/api/outfits/${outfitId}/rename`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ newName }),
@@ -307,7 +307,7 @@ export const useTailorStore = create<TailorStore>((set, get) => ({
     const outfit = get().outfits.find(o => o.getId() === outfitId);
     if (!outfit) return;
     try {
-      await fetch(`http://localhost:5000/api/outfits/${outfitId}`, {
+      await fetch(`/api/outfits/${outfitId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: outfit.getStatus(), ...data }),
@@ -326,7 +326,7 @@ export const useTailorStore = create<TailorStore>((set, get) => ({
     const outfit = get().outfits.find(o => o.getId() === outfitId);
     if (!outfit) return;
     try {
-      await fetch(`http://localhost:5000/api/outfits/${outfitId}`, {
+      await fetch(`/api/outfits/${outfitId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status, ...outfit.getMeasurements() }),
@@ -336,7 +336,7 @@ export const useTailorStore = create<TailorStore>((set, get) => ({
 
   addPhoto: async (outfitId, url, caption) => {
     try {
-      const res = await fetch('http://localhost:5000/api/photos', {
+      const res = await fetch('/api/photos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ outfitId, url, caption }),
@@ -364,7 +364,7 @@ export const useTailorStore = create<TailorStore>((set, get) => ({
       }),
     }));
     try {
-      await fetch(`http://localhost:5000/api/photos/${photoId}/caption`, {
+      await fetch(`/api/photos/${photoId}/caption`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ caption }),
@@ -377,7 +377,7 @@ export const useTailorStore = create<TailorStore>((set, get) => ({
       outfits: state.outfits.map(o => { o.removePhoto(photoId); return o; }),
     }));
     try {
-      await fetch(`http://localhost:5000/api/photos/${photoId}`, { method: 'DELETE' });
+      await fetch(`/api/photos/${photoId}`, { method: 'DELETE' });
     } catch (error) { console.error('❌ ลบรูปล้มเหลว:', error); }
   },
 }));
