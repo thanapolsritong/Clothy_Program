@@ -3,21 +3,21 @@ USE Clothy_Database;
 GO
 
 -- ตาราง Customers
--- INSERT — เพิ่มข้อมูลลูกค้าใหม่
+
+-- Select-CRUD
+SELECT * FROM Customers;
+
+--Insert-CRUD
 INSERT INTO Customers (CustomerID, Name, Phone, Department, Address)
-VALUES ('c001', 'สมชาย ใจดี', '0812345678', 'ฝ่ายบุคคล', '123 ถ.สุขุมวิท กรุงเทพฯ');
+VALUES ('c001', 'นายทองดี ไม่มีฝาก', '0812345678', 'IT', '123 ถ.พหลโยธิน กรุงเทพฯ');
 
--- SELECT — ดูข้อมูลลูกค้า
-SELECT CustomerID, Name, Phone, Department
-FROM Customers
-WHERE Name LIKE '%สมชาย%';
-
--- UPDATE — แก้ไขข้อมูลลูกค้า
+--Update-CRUD
 UPDATE Customers
-SET Phone = '0899999999', Department = 'ฝ่ายการเงิน'
+SET Name = 'ทองดี มีเก็บ',
+    Department = 'Dev'
 WHERE CustomerID = 'c001';
 
--- DELETE — ลบข้อมูลลูกค้า
+--Delete-CRUD
 DELETE FROM Customers
 WHERE CustomerID = 'c001';
 
@@ -62,20 +62,3 @@ WHERE PhotoID = 'p001';
 -- DELETE — ลบรูปภาพ
 DELETE FROM Photos
 WHERE PhotoID = 'p001';
-
--- Select-CRUD
-SELECT * FROM Customers;
-
---Insert-CRUD
-INSERT INTO Customers (CustomerID, Name, Phone, Department, Address)
-VALUES ('c001', 'นายทองดี ไม่มีฝาก', '0812345678', 'IT', '123 ถ.พหลโยธิน กรุงเทพฯ');
-
---Update-CRUD
-UPDATE Customers
-SET Name = 'ทองดี มีเก็บ',
-    Department = 'Dev'
-WHERE CustomerID = 'c001';
-
---Delete-CRUD
-DELETE FROM Customers
-WHERE CustomerID = 'c001';

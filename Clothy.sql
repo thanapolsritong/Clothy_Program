@@ -1,6 +1,3 @@
--- =============================================
--- Clothy Database — Complete Setup Script
--- =============================================
 
 -- 1. สร้าง Database
 CREATE DATABASE Clothy_Database;
