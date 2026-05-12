@@ -8,7 +8,7 @@ export default function Dashboard() {
   const { customers, outfits, addCustomer, renameCustomer, deleteCustomer } = useTailorStore();
   const navigate = useNavigate();
 
-  const [formData, setFormData]     = useState({ name: '', phone: '', dept: '', address: '' });
+  const [formData, setFormData]     = useState({ name: '', phone: '', department: '', address: '' });
   const [successMsg, setSuccessMsg] = useState('');
   const [isLoading, setIsLoading]   = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -29,9 +29,9 @@ export default function Dashboard() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const ok = await addCustomer(formData.name, formData.phone, formData.dept, formData.address);
+      const ok = await addCustomer(formData.name, formData.phone, formData.department, formData.address);
       if (ok) {
-        setFormData({ name: '', phone: '', dept: '', address: '' });
+        setFormData({ name: '', phone: '', department: '', address: '' });
         setSuccessMsg('🎉 บันทึกลูกค้าสำเร็จ!');
       } else {
         setSuccessMsg('❌ เกิดข้อผิดพลาด กรุณาตรวจสอบว่า Server รันอยู่');
@@ -87,8 +87,8 @@ export default function Dashboard() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1">แผนก (เลือกใส่ได้)</label>
-              <input type="text" title="แผนก" value={formData.dept}
-                onChange={e => setFormData({ ...formData, dept: e.target.value })}
+              <input type="text" title="แผนก" value={formData.department}
+                onChange={e => setFormData({ ...formData, department: e.target.value })}
                 className="w-full px-4 py-2.5 bg-[#EBF5FB] border border-transparent focus:border-[#6BB5D6] focus:bg-white rounded-xl outline-none transition-all" />
             </div>
             <div>

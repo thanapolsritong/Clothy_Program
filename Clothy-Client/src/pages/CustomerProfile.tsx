@@ -65,7 +65,7 @@ export default function CustomerProfile() {
           <div>
             <h1 className="text-3xl font-light mb-1">{customer.getName()}</h1>
             <p className="text-gray-500">เบอร์โทร: {customer.getPhone()}</p>
-            {customer.getDept() && <p className="text-sm text-gray-400 mt-1">แผนก: {customer.getDept()}</p>}
+            {customer.getDepartment() && <p className="text-sm text-gray-400 mt-1">แผนก: {customer.getDepartment()}</p>}
           </div>
           <div className="w-16 h-16 rounded-full bg-[#EBF5FB] text-[#6BB5D6] flex items-center justify-center text-2xl font-bold">
             {customer.getName()?.charAt(0) ?? '?'}

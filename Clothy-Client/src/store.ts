@@ -21,20 +21,20 @@ export abstract class BaseModel {
 export class Customer extends BaseModel {
   private name: string;
   private phone: string;
-  private dept: string;
+  private department: string;
   private address: string;
 
-  constructor(id: string, name: string, phone: string, dept = '', address = '') {
+  constructor(id: string, name: string, phone: string, department = '', address = '') {
     super(id);
-    this.name    = name;
-    this.phone   = phone;
-    this.dept    = dept;
-    this.address = address;
+    this.name       = name;
+    this.phone      = phone;
+    this.department = department;
+    this.address    = address;
   }
 
-  getName():    string { return this.name; }
-  getPhone():   string { return this.phone; }
-  getDept():    string { return this.dept; }
+  getName():       string { return this.name; }
+  getPhone():      string { return this.phone; }
+  getDepartment(): string { return this.department; }
   getAddress(): string { return this.address; }
 
   setName(name: string): void {
@@ -135,7 +135,7 @@ interface TailorStore {
   fetchCustomers:     () => Promise<void>;
   fetchOutfits:       () => Promise<void>;
 
-  addCustomer:        (name: string, phone: string, dept: string, address: string) => Promise<boolean>;
+  addCustomer:        (name: string, phone: string, department: string, address: string) => Promise<boolean>;
   renameCustomer:     (customerId: string, newName: string) => Promise<void>;
   deleteCustomer:     (customerId: string) => Promise<void>;
 
@@ -232,19 +232,28 @@ export const useTailorStore = create<TailorStore>((set, get) => ({
     } catch (error) { console.error('❌ โหลดชุดสั่งตัดล้มเหลว:', error); }
   },
 
-  addCustomer: async (name, phone, dept, address) => {
+  //Insert — เพิ่มข้อมูลใหม่
+  addCustomer: async (name, phone, department, address) => {
+    // ฟังก์ชัน async รับชื่อ เบอร์ แผนก ที่อยู่ จากฟอร์มในเว็บ
     try {
       const res = await fetch('/api/customers', {
+        // ส่ง HTTP request ไปหา server ที่ path /api/customers
         method: 'POST',
+        // POST = บอก server ว่าจะเพิ่มข้อมูลใหม่
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, phone, dept, address }),
+        // บอก server ว่าข้อมูลที่ส่งไปเป็นรูปแบบ JSON
+        body: JSON.stringify({ name, phone, dept: department, address }),
+        // แปลง Object เป็น JSON string แล้วใส่ใน body ของ request
       });
       if (res.ok) { await get().fetchCustomers(); return true; }
+      // ถ้า server ตอบกลับ OK → โหลดข้อมูลลูกค้าใหม่ให้หน้าเว็บอัปเดต
+      // return true บอกให้ผู้เรียกรู้ว่าเพิ่มสำเร็จ
     } catch (error) { console.error('❌ เพิ่มลูกค้าล้มเหลว:', error); }
+    // ถ้าเกิด error เช่น server ไม่ตอบให้แสดงใน console
     return false;
   },
-
-  renameCustomer: async (customerId, newName) => {
+//Update — แก้ไขข้อมูล
+  renameCustomer: async (customerId, newName) => { 
     try {
       const res = await fetch(`/api/customers/${customerId}/rename`, {
         method: 'PUT',
@@ -255,6 +264,7 @@ export const useTailorStore = create<TailorStore>((set, get) => ({
     } catch (error) { console.error('❌ แก้ไขชื่อลูกค้าล้มเหลว:', error); }
   },
 
+  //Delete — ลบข้อมูล
   deleteCustomer: async (customerId) => {
     try {
       const res = await fetch(`/api/customers/${customerId}`, { method: 'DELETE' });

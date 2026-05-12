@@ -2,8 +2,10 @@
 USE Clothy_Database;
 GO
 
--- ตาราง Customers
+-- Select ดูตารางทั้งหมด
+SELECT * FROM Customers,Outfits,Photos;
 
+-- ตาราง Customers
 -- Select-CRUD
 SELECT * FROM Customers;
 
