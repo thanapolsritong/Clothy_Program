@@ -3,7 +3,9 @@ USE Clothy_Database;
 GO
 
 -- Select ดูตารางทั้งหมด
-SELECT * FROM Customers,Outfits,Photos;
+SELECT * FROM Customers;
+SELECT * FROM Photos;
+SELECT * FROM Outfits;
 
 -- ตาราง Customers
 -- Select-CRUD

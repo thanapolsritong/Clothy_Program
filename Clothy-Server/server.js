@@ -174,10 +174,11 @@ class Photo extends BaseModel {
 
 // ==========================================
 // DATABASE CONNECTION
-// ==========================================
+// ========================================== 
 
 const dbConfig = {
-  server: process.env.DB_SERVER ? `${process.env.DB_SERVER}\\SQLEXPRESS` : 'localhost\\SQLEXPRESS',
+  server: process.env.DB_SERVER ? `${process.env.DB_SERVER}\\SQLEXPRESS` :
+   'localhost\\SQLEXPRESS',
   database: process.env.DB_DATABASE || 'Clothy_DataBase',
   driver: 'ODBC Driver 17 for SQL Server',
   options: {

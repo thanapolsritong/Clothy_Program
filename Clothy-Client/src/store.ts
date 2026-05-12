@@ -234,22 +234,14 @@ export const useTailorStore = create<TailorStore>((set, get) => ({
 
   //Insert — เพิ่มข้อมูลใหม่
   addCustomer: async (name, phone, department, address) => {
-    // ฟังก์ชัน async รับชื่อ เบอร์ แผนก ที่อยู่ จากฟอร์มในเว็บ
     try {
       const res = await fetch('/api/customers', {
-        // ส่ง HTTP request ไปหา server ที่ path /api/customers
         method: 'POST',
-        // POST = บอก server ว่าจะเพิ่มข้อมูลใหม่
         headers: { 'Content-Type': 'application/json' },
-        // บอก server ว่าข้อมูลที่ส่งไปเป็นรูปแบบ JSON
         body: JSON.stringify({ name, phone, dept: department, address }),
-        // แปลง Object เป็น JSON string แล้วใส่ใน body ของ request
       });
       if (res.ok) { await get().fetchCustomers(); return true; }
-      // ถ้า server ตอบกลับ OK → โหลดข้อมูลลูกค้าใหม่ให้หน้าเว็บอัปเดต
-      // return true บอกให้ผู้เรียกรู้ว่าเพิ่มสำเร็จ
     } catch (error) { console.error('❌ เพิ่มลูกค้าล้มเหลว:', error); }
-    // ถ้าเกิด error เช่น server ไม่ตอบให้แสดงใน console
     return false;
   },
 //Update — แก้ไขข้อมูล
