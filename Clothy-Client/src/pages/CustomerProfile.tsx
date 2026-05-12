@@ -100,16 +100,13 @@ export default function CustomerProfile() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {customerOutfits.map(outfit => (
               <div key={outfit.getId()} className="relative group">
-                <button disabled={isEditMode}
-                  onClick={() => navigate(`/customer/${customer.getId()}/outfit/${outfit.getId()}`)}
-                  className={`w-full bg-white p-6 rounded-2xl border transition-all text-left flex items-start gap-4 ${
-                    isEditMode ? 'border-dashed border-gray-300 opacity-80' : 'border-[#e5e5e0] shadow-sm hover:shadow-md hover:border-[#6BB5D6]'}`}>
-                  <div className={`p-3 rounded-xl transition-colors ${isEditMode ? 'bg-gray-100 text-gray-400' : 'bg-[#EBF5FB] text-[#6BB5D6]'}`}>
-                    <Shirt size={24} />
-                  </div>
-                  <div className="flex-1 overflow-hidden">
-                    {editingId === outfit.getId() ? (
-                      <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
+                {editingId === outfit.getId() ? (
+                  <div className="w-full bg-white p-6 rounded-2xl border border-dashed border-gray-300 opacity-80 flex items-start gap-4">
+                    <div className="p-3 rounded-xl bg-gray-100 text-gray-400">
+                      <Shirt size={24} />
+                    </div>
+                    <div className="flex-1 overflow-hidden">
+                      <div className="flex items-center gap-2">
                         <input autoFocus value={tempName} onChange={e => setTempName(e.target.value)}
                           className="border-b-2 border-[#6BB5D6] outline-none text-lg font-semibold w-full bg-transparent"
                           aria-label="แก้ไขชื่อชุด" title="แก้ไขชื่อชุด" placeholder="กรอกชื่อชุด..." />
@@ -118,15 +115,23 @@ export default function CustomerProfile() {
                         <button onClick={() => setEditingId(null)} aria-label="ยกเลิก" title="ยกเลิก"
                           className="text-red-400 hover:bg-red-50 p-1 rounded"><X size={20} /></button>
                       </div>
-                    ) : (
-                      <>
-                        <h3 className="font-semibold text-lg truncate">{outfit.getName()}</h3>
-                        <p className="text-sm text-gray-500">สถานะ: {outfit.getStatus()}</p>
-                        {!isEditMode && <span className="text-xs font-medium text-[#6BB5D6] mt-2 block">จัดการสัดส่วนและรูปภาพ →</span>}
-                      </>
-                    )}
+                    </div>
                   </div>
-                </button>
+                ) : (
+                  <button disabled={isEditMode}
+                    onClick={() => navigate(`/customer/${customer.getId()}/outfit/${outfit.getId()}`)}
+                    className={`w-full bg-white p-6 rounded-2xl border transition-all text-left flex items-start gap-4 ${
+                      isEditMode ? 'border-dashed border-gray-300 opacity-80' : 'border-[#e5e5e0] shadow-sm hover:shadow-md hover:border-[#6BB5D6]'}`}>
+                    <div className={`p-3 rounded-xl transition-colors ${isEditMode ? 'bg-gray-100 text-gray-400' : 'bg-[#EBF5FB] text-[#6BB5D6]'}`}>
+                      <Shirt size={24} />
+                    </div>
+                    <div className="flex-1 overflow-hidden">
+                      <h3 className="font-semibold text-lg truncate">{outfit.getName()}</h3>
+                      <p className="text-sm text-gray-500">สถานะ: {outfit.getStatus()}</p>
+                      {!isEditMode && <span className="text-xs font-medium text-[#6BB5D6] mt-2 block">จัดการสัดส่วนและรูปภาพ →</span>}
+                    </div>
+                  </button>
+                )}
 
                 {isEditMode && editingId !== outfit.getId() && (
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 flex gap-2">
