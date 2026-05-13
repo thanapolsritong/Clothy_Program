@@ -165,17 +165,12 @@ export default function Dashboard() {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
             {filteredCustomers.map(customer => (
               <div key={customer.getId()} className="relative">
-                <button type="button" disabled={isEditMode}
-                  onClick={() => navigate(`/customer/${customer.getId()}`)}
-                  aria-label={`ดูข้อมูลลูกค้า ${customer.getName()}`}
-                  title={customer.getName()}
-                  className={`w-full flex flex-col items-center p-6 bg-white rounded-3xl border shadow-sm transition-all group ${
-                    isEditMode ? 'border-dashed border-gray-300 opacity-80 cursor-default' : 'border-[#e5e5e0] hover:shadow-md hover:-translate-y-1'}`}>
-                  <div className="w-20 h-20 rounded-full bg-[#EBF5FB] flex items-center justify-center text-[#6BB5D6] text-2xl font-semibold mb-4 group-hover:bg-[#6BB5D6] group-hover:text-white transition-colors">
-                    {customer.getName()?.charAt(0) ?? '?'}
-                  </div>
-                  {editingId === customer.getId() ? (
-                    <div className="flex items-center gap-1 w-full" onClick={e => e.stopPropagation()}>
+                {editingId === customer.getId() ? (
+                  <div className="w-full flex flex-col items-center p-6 bg-white rounded-3xl border border-dashed border-gray-300 opacity-80 shadow-sm">
+                    <div className="w-20 h-20 rounded-full bg-[#EBF5FB] flex items-center justify-center text-[#6BB5D6] text-2xl font-semibold mb-4">
+                      {customer.getName()?.charAt(0) ?? '?'}
+                    </div>
+                    <div className="flex items-center gap-1 w-full">
                       <input autoFocus value={tempName} onChange={e => setTempName(e.target.value)}
                         aria-label="แก้ไขชื่อลูกค้า" title="แก้ไขชื่อลูกค้า" placeholder="ชื่อลูกค้า"
                         className="border-b-2 border-[#6BB5D6] outline-none text-sm font-medium w-full bg-transparent text-center" />
@@ -188,13 +183,21 @@ export default function Dashboard() {
                         <X size={16} />
                       </button>
                     </div>
-                  ) : (
-                    <>
-                      <h3 className="font-medium text-gray-800 text-center line-clamp-1">{customer.getName()}</h3>
-                      <p className="text-xs text-gray-500 mt-1">{customer.getPhone()}</p>
-                    </>
-                  )}
-                </button>
+                  </div>
+                ) : (
+                  <button type="button" disabled={isEditMode}
+                    onClick={() => navigate(`/customer/${customer.getId()}`)}
+                    aria-label={`ดูข้อมูลลูกค้า ${customer.getName()}`}
+                    title={customer.getName()}
+                    className={`w-full flex flex-col items-center p-6 bg-white rounded-3xl border shadow-sm transition-all group ${
+                      isEditMode ? 'border-dashed border-gray-300 opacity-80 cursor-default' : 'border-[#e5e5e0] hover:shadow-md hover:-translate-y-1'}`}>
+                    <div className="w-20 h-20 rounded-full bg-[#EBF5FB] flex items-center justify-center text-[#6BB5D6] text-2xl font-semibold mb-4 group-hover:bg-[#6BB5D6] group-hover:text-white transition-colors">
+                      {customer.getName()?.charAt(0) ?? '?'}
+                    </div>
+                    <h3 className="font-medium text-gray-800 text-center line-clamp-1">{customer.getName()}</h3>
+                    <p className="text-xs text-gray-500 mt-1">{customer.getPhone()}</p>
+                  </button>
+                )}
 
                 {isEditMode && editingId !== customer.getId() && (
                   <div className="absolute top-2 right-2 flex gap-1">
